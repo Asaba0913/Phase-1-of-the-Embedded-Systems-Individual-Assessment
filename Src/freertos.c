@@ -48,8 +48,9 @@
 
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
-osThreadId PlotterTaskHandle;
-osThreadId CanTaskHandle;
+osThreadId buzzerHandle;
+osThreadId LED_taskHandle;
+osThreadId imuHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -57,8 +58,9 @@ osThreadId CanTaskHandle;
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void const * argument);
-extern void plotter_task(void const * argument);
-extern void can_task(void const * argument);
+extern void buzzer_task(void const * argument);
+extern void led_task(void const * argument);
+extern void imu_task(void const * argument);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -110,13 +112,17 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-  /* definition and creation of PlotterTask */
-  osThreadDef(PlotterTask, plotter_task, osPriorityLow, 0, 128);
-  PlotterTaskHandle = osThreadCreate(osThread(PlotterTask), NULL);
+  /* definition and creation of buzzer */
+  osThreadDef(buzzer, buzzer_task, osPriorityIdle, 0, 128);
+  buzzerHandle = osThreadCreate(osThread(buzzer), NULL);
 
-  /* definition and creation of CanTask */
-  osThreadDef(CanTask, can_task, osPriorityLow, 0, 256);
-  CanTaskHandle = osThreadCreate(osThread(CanTask), NULL);
+  /* definition and creation of LED_task */
+  osThreadDef(LED_task, led_task, osPriorityLow, 0, 128);
+  LED_taskHandle = osThreadCreate(osThread(LED_task), NULL);
+
+  /* definition and creation of imu */
+  osThreadDef(imu, imu_task, osPriorityIdle, 0, 128);
+  imuHandle = osThreadCreate(osThread(imu), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
