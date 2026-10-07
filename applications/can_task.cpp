@@ -1,18 +1,18 @@
+
 #include "cmsis_os.h"
 #include "io/can/can.hpp"
 #include "motor/rm_motor/rm_motor.hpp"
 
 sp::CAN can1(&hcan1);
-sp::RM_Motor motor6020(1, sp::RM_Motors::GM6020);  // 一个电机ID为1, 电流控制模式的6020
+sp::RM_Motor motor6020(2, sp::RM_Motors::GM6020);  // 一个电机ID为1, 电流控制模式的6020
 
 extern "C" void can_task()
 {
-  osDelay(500);
   can1.config();
   can1.start();
 
   while (true) {
-    motor6020.cmd(0.0f);  // 调整为0.1f, 电机会旋转, 注意安全
+    motor6020.cmd(0.2f);  // 调整为0.1f, 电机会旋转, 注意安全
 
     motor6020.write(can1.tx_data);
     can1.send(motor6020.tx_id);
