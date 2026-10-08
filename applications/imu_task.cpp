@@ -12,6 +12,8 @@ sp::BMI088 bmi088(&hspi1, GPIOA, GPIO_PIN_4, GPIOB, GPIO_PIN_0, r_ab);
 
 sp::Mahony imu(1e-3f);
 
+extern "C" float get_imu_yaw() { return imu.yaw; }
+
 extern "C" void imu_task()
 {
   bmi088.init();
